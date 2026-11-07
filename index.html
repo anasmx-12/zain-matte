@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#EAF2FB">
+<title>Räkna med Robbi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar">
+    <button class="logo" id="homeBtn" aria-label="Till startsidan">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <h1>Räkna med Robbi</h1>
+    </button>
+    <div class="chips">
+      <button class="chip btn prof" id="profBtn" title="Byt årskurs och nivå">Välj årskurs</button>
+      <span class="chip" title="Stjärnor att handla för"><svg viewBox="0 0 24 24"><path class="starpath" d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"/></svg><span class="walletN">0</span></span>
+      <span class="chip" title="Rätt i rad">I rad: <span id="streak">0</span></span>
+      <button class="chip btn" id="voiceBtn" aria-pressed="false">Läs upp</button>
+    </div>
+  </header>
+
+  <!-- PROFILE -->
+  <section id="profile" class="sec" hidden>
+    <div class="say">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Robbi frågar</small>Berätta vilken klass du går i, så gör jag uppgifter som passar dig.</div>
+    </div>
+    <div class="step"><h3>Vilken årskurs går du i?</h3><div class="opts" id="gradeOpts"></div></div>
+    <div class="step"><h3>Vilken termin är det?</h3><div class="opts" id="termOpts"></div></div>
+    <div class="step"><h3>Välj nivå</h3><div class="lvls" id="levelOpts"></div></div>
+    <button class="go" id="profileGo" style="align-self:flex-start">Klar, nu kör vi!</button>
+  </section>
+
+  <!-- HOME -->
+  <section id="home" class="sec" hidden>
+    <div class="say">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Robbi säger</small><span id="homeSay"></span></div>
+    </div>
+    <div class="key" id="keyCard"></div>
+    <h2 class="hero">Vad vill du träna idag?</h2>
+    <div class="modes">
+      <button class="mode mul" data-mode="mul">
+        <div class="art"><span>3 <b>×</b> 4</span></div>
+        <h2>Gångertabellen</h2>
+        <p id="mulInfo"></p>
+      </button>
+      <button class="mode clk" data-mode="clock">
+        <div class="art" id="homeClock"></div>
+        <h2>Klockan</h2>
+        <p id="clockInfo"></p>
+      </button>
+      <button class="mode col" data-go="colpick">
+        <div class="art"><span class="stack"><span>&nbsp;47</span><span><b>+</b>38</span><span class="ln">&nbsp;85</span></span></div>
+        <h2>Uppställning</h2>
+        <p id="colInfo"></p>
+      </button>
+      <button class="mode tab" data-go="tabpick">
+        <div class="art"><span>7, 14, <b>21</b> …</span></div>
+        <h2>Öva en tabell</h2>
+        <p>Välj en tabell från 1:an till 10:an och öva den i ordning eller blandat.</p>
+      </button>
+    </div>
+    <h2 class="sub">Belöningar</h2>
+    <div class="modes">
+      <button class="mode shopc" data-go="shop">
+        <div class="art"><span class="emo">🛍️</span></div>
+        <h2>Butiken</h2>
+        <p>Köp möbler, djur och kläder till Robbi för dina stjärnor.</p>
+      </button>
+      <button class="mode roomc" data-go="room">
+        <div class="art" id="homeRoomArt"></div>
+        <h2>Mitt rum</h2>
+        <p>Dra in dina saker och möblera som du vill.</p>
+      </button>
+    </div>
+    <button class="grown" id="brainBtn">För vuxna: nivåer och så tänker Robbi</button>
+  </section>
+
+  <!-- PICK A TABLE -->
+  <section id="tabpick" class="sec" hidden>
+    <div class="top"><button class="back" data-go="home">Tillbaka</button></div>
+    <div class="say">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Robbi frågar</small>Vilken tabell vill du öva? Den gröna stapeln visar hur säker du är.</div>
+    </div>
+    <div class="tabgrid" id="tabGrid"></div>
+    <div class="panel" id="tabView" hidden></div>
+  </section>
+
+  <!-- PICK AN OPERATION -->
+  <section id="colpick" class="sec" hidden>
+    <div class="top"><button class="back" data-go="home">Tillbaka</button></div>
+    <div class="say">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Robbi frågar</small>Vilket räknesätt vill du ställa upp? Jag gör tal som passar din nivå.</div>
+    </div>
+    <div class="ops" id="opGrid"></div>
+  </section>
+
+  <!-- PLAY -->
+  <section id="play" class="sec" hidden>
+    <div class="top">
+      <button class="back" data-go="home">Sluta</button>
+      <div class="dots" id="dots" aria-label="Uppgifter i omgången"></div>
+    </div>
+    <div class="say">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true" id="playRobbi"></svg>
+      <div class="bubble"><small>Robbi tänker</small><span id="why"></span></div>
+    </div>
+    <div class="card" id="card"></div>
+  </section>
+
+  <!-- DONE -->
+  <section id="done" class="sec" hidden>
+    <div class="card done">
+      <h2 id="doneTitle"></h2>
+      <div class="big-score" id="doneScore"></div>
+      <div class="starrow" id="doneStars"></div>
+      <div class="say" style="text-align:left;width:100%">
+        <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+        <div class="bubble"><small>Robbi säger</small><span id="doneSay"></span></div>
+      </div>
+      <div class="key mini" id="doneKey"></div>
+      <div class="row">
+        <button class="go" id="againBtn">En omgång till</button>
+        <button class="ghost sky" id="suggestBtn" hidden></button>
+        <button class="ghost" data-go="home">Startsidan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section id="shop" class="sec" hidden>
+    <div class="top">
+      <button class="back" data-go="home">Tillbaka</button>
+      <button class="back" data-go="room">Mitt rum</button>
+    </div>
+    <div class="say">
+      <svg class="robbi big" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Butiken</small><span id="shopSay">Du får en stjärna för varje rätt svar. Vad vill du köpa?</span></div>
+    </div>
+    <div class="tabs" id="shopTabs" role="tablist"></div>
+    <div class="items" id="shopItems"></div>
+  </section>
+
+  <!-- ROOM -->
+  <section id="room" class="sec" hidden>
+    <div class="top">
+      <button class="back" data-go="home">Tillbaka</button>
+      <button class="back" data-go="shop">Till butiken</button>
+    </div>
+    <div class="say">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Mitt rum</small><span id="roomSay"></span></div>
+    </div>
+    <div class="roomgrid" id="roomGrid"></div>
+    <div class="selbar" id="selBar" hidden>
+      <button class="ghost" id="flipBtn">Spegla</button>
+      <button class="ghost" id="storeBtn">Lägg i lådan</button>
+    </div>
+    <h3>Din låda</h3>
+    <div class="tray" id="tray"></div>
+  </section>
+
+  <!-- REWARD GAME -->
+  <section id="game" class="sec" hidden>
+    <div class="top">
+      <button class="back" data-go="home">Sluta spela</button>
+      <span class="chip" id="gameTime"></span>
+      <span class="chip" id="gameScore"></span>
+    </div>
+    <div class="gamebox"><canvas id="gameCanvas" aria-label="Stjärnfångaren, ett spel"></canvas></div>
+  </section>
+
+  <!-- BRAIN -->
+  <section id="brain" class="sec" hidden>
+    <div class="top"><button class="back" data-go="home">Tillbaka</button></div>
+    <h2 class="hero">Nivåer och Robbis hjärna</h2>
+    <div class="panel">
+      <h2>Speltid som belöning</h2>
+      <p>Robbi räknar bara tid då barnet faktiskt svarar på uppgifter. Tiden mellan två svar räknas, men högst 90 sekunder, så en app som bara står öppen ger ingen speltid. Efter 30 minuter matte låses spelet Stjärnfångaren upp i 20 minuter. Speltiden räknas på klockan från att spelet startas, även om appen stängs.</p>
+      <div class="stat" id="timeStats"></div>
+    </div>
+    <div class="panel">
+      <h2>Nivåerna, åk 1–4</h2>
+      <p>Varje termin har tre nivåer. Nivå 1 är en lugn start, nivå 2 är lagom för terminen och nivå 3 är en utmaning som tar med lite av nästa termins innehåll. Den markerade rutan är barnets nuvarande val.</p>
+      <div class="scroll"><table class="plan" id="plan"></table></div>
+    </div>
+    <div class="panel">
+      <h2>Så tänker Robbi</h2>
+      <p>Robbi är en liten AI som körs direkt i webbläsaren. Efter varje svar uppdaterar den hur säkert barnet kan just den uppgiften. Snabba rätta svar höjer mer än långsamma. Inom den valda nivån väljer Robbi nästa uppgift så att barnet klarar ungefär tre av fyra. Fel svar kommer tillbaka några uppgifter senare, och klockan blandar in repetition från tidigare nivåer. När nivån sitter föreslår Robbi nästa nivå, och om det går tungt föreslår den en lättare.</p>
+      <div class="stat" id="brainStats"></div>
+    </div>
+    <div class="panel">
+      <h2>Gångertabellen</h2>
+      <div class="legend2"><span><i style="background:color-mix(in oklab,var(--tomato) 70%,var(--paper))"></i>Svår</span><span><i style="background:color-mix(in oklab,var(--sun) 75%,var(--paper))"></i>På väg</span><span><i style="background:color-mix(in oklab,var(--grass) 75%,var(--paper))"></i>Sitter</span><span><i style="background:var(--line)"></i>Inte övad än</span><span><i style="border:1px dashed var(--line)"></i>Inte med i nivån</span></div>
+      <div class="scroll"><table class="heat" id="heat"></table></div>
+    </div>
+    <div class="panel">
+      <h2>Klockan</h2>
+      <div id="clockLevels" class="lvls-list"></div>
+    </div>
+    <div class="panel">
+      <h2>Uppställning</h2>
+      <p>Talen blir större ju högre årskurs och nivå. Division görs med liggande stolen och går alltid jämnt ut.</p>
+      <div id="colLevels" class="lvls-list"></div>
+    </div>
+    <div class="panel">
+      <h2>Börja om</h2>
+      <p>Allt sparas bara i den här webbläsaren. Här kan du nollställa vad Robbi vet om barnets kunskaper. Stjärnor, rum och köpta saker finns kvar.</p>
+      <div class="row" style="justify-content:flex-start" id="resetRow"></div>
+    </div>
+  </section>
+</div>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
