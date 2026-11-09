@@ -10,6 +10,12 @@ import { openShop } from './shop';
 import { openRoom, roomThumb, bindRoomButtons } from './room';
 import { openGame } from './game';
 import { keyHTML, startReward, rewardActive, STUDY_MS } from './timer';
+import { examPick, bindExam } from './exam';
+import { openGarage } from './garage';
+import { openRunner, bindRunnerKeys } from './runner';
+import { openChat, bindChat } from './chat';
+import { heroById, heroSVG, HEROES } from './heroes';
+import { aiBase, setAiBase, aiHealth, aiHistory } from './ai';
 import type { Mode } from './types';
 
 /* ---------- profile ---------- */
@@ -43,8 +49,9 @@ function home(): void {
   $('#colInfo').textContent = `Ställ upp och räkna plus, minus, gånger och delat med. Som ${g.a} + ${g.b}.`;
   $('#homeClock').innerHTML = clockSVG(3, 30, 110);
   $('#homeRoomArt').innerHTML = roomThumb();
+  $('#homeRunArt').innerHTML = HEROES.map(h => `<img alt="" style="height:100px;margin-right:-18px" src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(heroSVG(h))}">`).join('');
   $('#keyCard').innerHTML = keyHTML();
-  $('#homeSay').textContent = S.answered === 0 ? `Hej! Jag är Robbi. Jag har gjort uppgifter för åk ${S.profile.grade}, nivå ${S.profile.level}. För varje rätt svar får du en stjärna att handla för.`
+  $('#homeSay').textContent = S.answered === 0 ? `Hej! Jag är ${heroById(S.runner.hero).name}. Jag har gjort uppgifter för åk ${S.profile.grade}, nivå ${S.profile.level}. För varje rätt svar får du en stjärna att handla för.`
     : `Välkommen tillbaka! Du har ${S.stars} stjärnor att handla för. Vad vill du köra?`;
 }
 
@@ -87,16 +94,40 @@ function brain(): void {
   const corr = vals.reduce((a, b) => a + b.c, 0), tot = vals.reduce((a, b) => a + b.n, 0);
   $('#brainStats').innerHTML = `<div><b>${S.answered}</b>svar totalt</div><div><b>${tot ? Math.round((corr / tot) * 100) + ' %' : '–'}</b>rätt i gånger</div><div><b>${S.best}</b>bästa rad</div><div><b>${Math.round(mulMastery(s).p * 100)} %</b>säker på nivåns gånger</div>`;
   $('#timeStats').innerHTML = `<div><b>${Math.floor(S.timer.studyMs / 60000)} / ${STUDY_MS / 60000}</b>minuter mot nästa speltid</div><div><b>${S.timer.rewards}</b>speltider upplåsta</div><div><b>${S.earned}</b>stjärnor intjänade</div><div><b>${S.hiscore}</b>rekord i spelet</div>`;
+  drawAiPanel();
   $('#resetRow').innerHTML = '<button class="danger" id="resetBtn">Nollställ kunskaper</button>';
   $('#resetBtn').onclick = () => {
-    $('#resetRow').innerHTML = '<span style="font-weight:800">Säker? Robbi glömmer vad barnet kan.</span><button class="danger" id="yesReset">Ja, nollställ</button><button class="back" id="noReset">Avbryt</button>';
+    $('#resetRow').innerHTML = '<span style="font-weight:800">Säker? Sonic glömmer vad barnet kan.</span><button class="danger" id="yesReset">Ja, nollställ</button><button class="back" id="noReset">Avbryt</button>';
     $('#yesReset').onclick = () => { resetLearning(); head(); brain(); $('#resetRow').insertAdjacentHTML('beforeend', '<span class="toast">Nollställt.</span>'); };
     $('#noReset').onclick = brain;
   };
 }
 
 /* ---------- navigation ---------- */
-const NAV: Record<string, () => void> = { home, colpick: colPick, tabpick: tabPick, shop: openShop, room: openRoom, brain, profile };
+/* ---------- Sonic-AI settings and test results (grown-up page) ---------- */
+const when = (t: number) => new Date(t).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
+async function drawAiPanel(): Promise<void> {
+  const hist = S.exams.length
+    ? '<table class="plan"><tr><th>När</th><th>Prov</th><th>Rätt</th><th>Tid</th></tr>' + S.exams.map(e =>
+      `<tr><td>${when(e.at)}</td><td>${e.title}</td><td><b>${e.score}/${e.total}</b></td><td>${Math.round(e.seconds / 60)} min</td></tr>`).join('') + '</table>'
+    : '<p>Inga prov gjorda än.</p>';
+  $('#examHist').innerHTML = hist;
+  $<HTMLInputElement>('#aiUrl').value = aiBase() || location.origin;
+  $('#aiStatus').textContent = 'Kollar Sonic-AI …';
+  const h = await aiHealth();
+  $('#aiStatus').innerHTML = h
+    ? `<b class="okc">Sonic-AI är igång.</b> ${h.claude ? `Chatten använder Claude (${h.model}).` : 'Ingen Claude-nyckel: chatten använder den inbyggda förklararen.'}`
+    : '<b class="noc">Sonic-AI svarar inte.</b> Appen gör då prov själv och chatten visar appens egna förklaringar.';
+  const sv = h ? await aiHistory() : null;
+  if (sv?.results.length) $('#examHistServer').innerHTML = `<p>Sparat i Sonic-AI:s databas: ${sv.results.length} prov, senast ${sv.results[0].title} (${sv.results[0].score}/${sv.results[0].total}).</p>`;
+}
+$('#aiSave').onclick = () => {
+  const v = $<HTMLInputElement>('#aiUrl').value.trim();
+  setAiBase(v === location.origin ? '' : v); drawAiPanel();
+};
+
+const NAV: Record<string, () => void> = { home, colpick: colPick, tabpick: tabPick, shop: openShop, room: openRoom, brain, profile,
+  exampick: examPick, garage: openGarage, runner: () => (rewardActive() ? openRunner() : openGarage()), chat: () => openChat() };
 document.addEventListener('click', e => {
   const el = (e.target as HTMLElement).closest<HTMLElement>('[data-go],[data-mode],[data-act]');
   if (!el) return;
@@ -110,7 +141,8 @@ $('#brainBtn').onclick = brain;
 $('#profBtn').onclick = profile;
 $('#againBtn').onclick = () => startRound(G.R!.mode, G.R!.opt);
 $('#voiceBtn').onclick = () => { setVoice(!voice); if (voice) speak('Nu läser jag upp.'); };
-bindRoomButtons();
+bindRoomButtons(); bindExam(); bindChat(); bindRunnerKeys();
+$('#askBtn').onclick = () => openChat();
 
 document.addEventListener('keydown', e => {
   if ($('#play').hidden || !G.R) return;

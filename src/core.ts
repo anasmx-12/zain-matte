@@ -1,4 +1,5 @@
 import { itemById } from './catalog';
+import { heroById, heroHead, migrateHeroes } from './heroes';
 
 /* ---------- small helpers ---------- */
 export const $ = <T extends HTMLElement = HTMLElement>(s: string): T => document.querySelector(s) as T;
@@ -35,12 +36,17 @@ export interface Store {
   room: { wall?: string; floor?: string; items: Placement[] };
   outfit: { hat?: string; glasses?: string; color?: string };
   timer: { studyMs: number; lastCredit: number; rewardEndsAt: number; rewards: number };
+  /** Matte Dash: chosen hero, trail, record and which boosts to bring. */
+  runner: { hero: string; trail?: string; best: number; bring: { shield?: boolean; magnet?: boolean; life?: boolean } };
+  /** Latest tests (prov), newest first. */
+  exams: { at: number; title: string; score: number; total: number; seconds: number }[];
 }
 
 const KEY = 'raknarobbi-v1';
 const fresh = (): Store => ({
   mul: {}, clock: {}, col: {}, stars: 0, earned: 0, best: 0, streak: 0, answered: 0, hiscore: 0, profile: null,
   owned: {}, room: { items: [] }, outfit: {}, timer: { studyMs: 0, lastCredit: 0, rewardEndsAt: 0, rewards: 0 },
+  runner: { hero: 'sonic', best: 0, bring: {} }, exams: [],
 });
 function load(): Store {
   const s = fresh();
@@ -54,6 +60,9 @@ function load(): Store {
       s.timer = { ...fresh().timer, ...(d.timer || {}) };
       s.owned = d.owned || {};
       s.outfit = d.outfit || {};
+      s.runner = { ...fresh().runner, ...(d.runner || {}) };
+      s.exams = Array.isArray(d.exams) ? d.exams : [];
+      migrateHeroes(s.runner, s.owned);
     }
   } catch { /* private mode or broken data: start fresh */ }
   return s;
@@ -113,36 +122,32 @@ export function setVoice(on?: boolean): void {
   const b = $('#voiceBtn'); b.setAttribute('aria-pressed', String(voice)); b.textContent = voice ? 'Läser upp' : 'Läs upp';
 }
 
-/* ---------- Robbi, dressed in what the child has bought ---------- */
+/* ---------- the mascot: the hero chosen in the garage, dressed in what the child has bought ---------- */
 export function robbiSVG(extras = true): string {
-  const hat = itemById(S.outfit.hat), glasses = itemById(S.outfit.glasses);
-  return `<line x1="32" y1="4" x2="32" y2="13" stroke="var(--ink)" stroke-width="3"/><circle cx="32" cy="5" r="4" fill="var(--tomato)" stroke="var(--ink)" stroke-width="2"/>
-<rect x="8" y="13" width="48" height="40" rx="14" fill="var(--robbi)" stroke="var(--ink)" stroke-width="3"/>
-<rect x="15" y="21" width="34" height="22" rx="9" fill="var(--face)" stroke="var(--ink)" stroke-width="2"/>
-<circle class="eye" cx="25" cy="30" r="3.6" fill="var(--ink)"/><circle class="eye" cx="39" cy="30" r="3.6" fill="var(--ink)"/>
-<path class="mouth" d="M26 37 Q32 41 38 37" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/>
-<rect x="3" y="27" width="6" height="12" rx="3" fill="var(--sun)" stroke="var(--ink)" stroke-width="2"/><rect x="55" y="27" width="6" height="12" rx="3" fill="var(--sun)" stroke="var(--ink)" stroke-width="2"/>` +
-    (extras && glasses ? `<text x="32" y="38" font-size="24" text-anchor="middle">${glasses.emoji}</text>` : '') +
-    (extras && hat ? `<text x="32" y="17" font-size="24" text-anchor="middle">${hat.emoji}</text>` : '');
+  const hat = itemById(S.outfit.hat), glasses = itemById(S.outfit.glasses), color = itemById(S.outfit.color)?.value;
+  const h = { ...heroById(S.runner.hero) };
+  if (color) h.body = color;
+  return heroHead(h, (extras && glasses ? `<text x="32" y="35" font-size="22" text-anchor="middle">${glasses.emoji}</text>` : '') +
+    (extras && hat ? `<text x="32" y="14" font-size="22" text-anchor="middle">${hat.emoji}</text>` : ''));
 }
 export function drawRobbi(): void {
-  const color = itemById(S.outfit.color)?.value;
-  if (color) document.documentElement.style.setProperty('--robbi', color);
-  else document.documentElement.style.removeProperty('--robbi');
   const svg = robbiSVG();
   $$('.robbi').forEach(s => (s.innerHTML = svg));
 }
 export function mood(m: 'happy' | 'oops' | 'think'): void {
   const p = document.querySelector('#playRobbi .mouth');
   if (!p) return;
-  p.setAttribute('d', m === 'happy' ? 'M24 35 Q32 44 40 35' : m === 'oops' ? 'M27 39 Q32 35 37 39' : 'M26 37 Q32 41 38 37');
+  p.setAttribute('d', m === 'happy' ? 'M25 39 Q32 48 39 39' : m === 'oops' ? 'M27 43 Q32 39 37 43' : 'M26 40 Q32 44 38 40');
 }
 
 /* ---------- screens ---------- */
-export type Screen = 'profile' | 'home' | 'tabpick' | 'colpick' | 'play' | 'done' | 'brain' | 'shop' | 'room' | 'game';
-const SCREENS: Screen[] = ['profile', 'home', 'tabpick', 'colpick', 'play', 'done', 'brain', 'shop', 'room', 'game'];
+export type Screen = 'profile' | 'home' | 'tabpick' | 'colpick' | 'play' | 'done' | 'brain' | 'shop' | 'room' | 'game'
+  | 'exampick' | 'examrun' | 'examdone' | 'garage' | 'runner';
+const SCREENS: Screen[] = ['profile', 'home', 'tabpick', 'colpick', 'play', 'done', 'brain', 'shop', 'room', 'game', 'exampick', 'examrun', 'examdone', 'garage', 'runner'];
 export function show(id: Screen): void {
   SCREENS.forEach(s => ($('#' + s).hidden = s !== id));
+  $('#askBtn').hidden = id === 'examrun'; // no help during a test
+  document.body.dataset.screen = id;
   window.scrollTo(0, 0);
 }
 export const STAR = '<svg viewBox="0 0 24 24" class="star"><path class="starpath" d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"/></svg>';

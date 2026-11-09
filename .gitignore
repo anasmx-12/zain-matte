@@ -3,3 +3,7 @@ dist/
 .DS_Store
 *.log
 .vite/
+ai/.venv/
+ai/.env
+ai/*.db
+__pycache__/

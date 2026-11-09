@@ -1,4 +1,4 @@
-# Räkna med Robbi (Zain matte)
+# Zain Matte
 
 Mattespel för åk 1–4, byggt med TypeScript + Vite. Fungerar i webbläsaren på iPad, iPhone och dator.
 
@@ -16,7 +16,19 @@ npm run build    # bygger dist/index.html – en enda fil som kan öppnas direkt
 - `timer.ts` – 30 min matte låser upp 20 min spel
 - `shop.ts`, `catalog.ts`, `room.ts` – butik och eget rum (dra och släpp)
 - `game.ts` – belöningsspelet Stjärnfångaren
-- `core.ts` – lagring, ljud, Robbi, hjälpfunktioner
+- `core.ts` – lagring, ljud, maskoten, hjälpfunktioner
+- `heroes.ts` – Sonic, Shadow, Amy och Knuckles (SVG) och sakerna i Matte Dash
+- `runner.ts`, `garage.ts` – springspelet Matte Dash och garaget där man köper för matte-stjärnor
+- `exam.ts` – prov per kapitel utan stöd (AI-genererade)
+- `chat.ts`, `ai.ts` – chatten "Fråga Sonic" med uppläsning, och anropen till Sonic-AI
+
+## Sonic-AI (mappen ai/, Python)
+```
+./ai/start.sh    # bygger appen vid behov och startar AI:n på http://localhost:8787
+```
+- `exam_gen.py` gör prov, `tutor.py` förklarar i chatten, `db.py` + `schema.sql` sparar prov i SQLite.
+- Lägg `ANTHROPIC_API_KEY=...` i `ai/.env` för att chatten ska svara fritt och skriva nya textuppgifter med Claude. Utan nyckel används en inbyggd förklarare.
+- Öppna `http://<datorns-ip>:8787` på iPaden så hittar appen AI:n automatiskt.
 
 Allt sparas i webbläsaren (localStorage).
 

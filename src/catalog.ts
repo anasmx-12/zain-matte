@@ -12,7 +12,7 @@ export interface Item {
   size?: 1 | 2;
   /** Wearables and room styles are equipped, not placed. */
   slot?: Slot;
-  /** Colour for Robbi, or a CSS background for walls/floors. */
+  /** Fur colour for the hero, or a CSS background for walls/floors. */
   value?: string;
 }
 
@@ -42,18 +42,18 @@ export const ITEMS: Item[] = [
   { id: 'rocket', name: 'Raket', emoji: '🚀', price: 80, tab: 'saker', size: 2 },
   { id: 'ufo', name: 'Ufo', emoji: '🛸', price: 90, tab: 'saker', size: 2 },
   { id: 'trophy', name: 'Pokal', emoji: '🏆', price: 100, tab: 'saker', size: 1 },
-  // for Robbi
+  // for the hero
   { id: 'bow', name: 'Rosett', emoji: '🎀', price: 12, tab: 'robbi', slot: 'hat' },
   { id: 'cap', name: 'Keps', emoji: '🧢', price: 15, tab: 'robbi', slot: 'hat' },
   { id: 'specs', name: 'Glasögon', emoji: '👓', price: 15, tab: 'robbi', slot: 'glasses' },
   { id: 'shades', name: 'Solglasögon', emoji: '🕶️', price: 20, tab: 'robbi', slot: 'glasses' },
-  { id: 'green', name: 'Grön Robbi', emoji: '🟢', price: 20, tab: 'robbi', slot: 'color', value: '#23955F' },
+  { id: 'green', name: 'Grön päls', emoji: '🟢', price: 20, tab: 'robbi', slot: 'color', value: '#23955F' },
   { id: 'tophat', name: 'Hög hatt', emoji: '🎩', price: 25, tab: 'robbi', slot: 'hat' },
-  { id: 'purple', name: 'Lila Robbi', emoji: '🟣', price: 25, tab: 'robbi', slot: 'color', value: '#8A5CD6' },
-  { id: 'pink', name: 'Rosa Robbi', emoji: '🩷', price: 25, tab: 'robbi', slot: 'color', value: '#E5609E' },
+  { id: 'purple', name: 'Lila päls', emoji: '🟣', price: 25, tab: 'robbi', slot: 'color', value: '#8A5CD6' },
+  { id: 'pink', name: 'Rosa päls', emoji: '🩷', price: 25, tab: 'robbi', slot: 'color', value: '#E5609E' },
   { id: 'gradcap', name: 'Studentmössa', emoji: '🎓', price: 40, tab: 'robbi', slot: 'hat' },
   { id: 'crown', name: 'Krona', emoji: '👑', price: 60, tab: 'robbi', slot: 'hat' },
-  { id: 'gold', name: 'Guld-Robbi', emoji: '🟡', price: 80, tab: 'robbi', slot: 'color', value: '#D9A000' },
+  { id: 'gold', name: 'Guldpäls', emoji: '🟡', price: 80, tab: 'robbi', slot: 'color', value: '#D9A000' },
   // walls and floors
   { id: 'wall-mint', name: 'Mintgrön vägg', emoji: '🟩', price: 10, tab: 'rum', slot: 'wall', value: '#BFE8D4' },
   { id: 'wall-rose', name: 'Rosa vägg', emoji: '🟪', price: 10, tab: 'rum', slot: 'wall', value: '#F6CFE0' },
@@ -77,6 +77,6 @@ export const itemById = (id: string | undefined): Item | undefined => (id ? byId
 
 export const SHOP_TABS: { id: ShopTab; name: string }[] = [
   { id: 'saker', name: 'Saker till rummet' },
-  { id: 'robbi', name: 'Klä ut Robbi' },
+  { id: 'robbi', name: 'Klä ut hjälten' },
   { id: 'rum', name: 'Väggar och golv' },
 ];

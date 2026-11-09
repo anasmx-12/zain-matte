@@ -48,10 +48,10 @@ export const fmt = (ms: number): string => {
 export function keyHTML(): string {
   if (rewardActive()) {
     return `<div class="keyrow"><span class="emo">🎮</span><div><b>Spelet är öppet!</b><span>${fmt(rewardLeft())} kvar av speltiden</span></div></div>
-      <button class="go" data-act="play">Spela Stjärnfångaren</button>`;
+      <div class="row" style="justify-content:flex-start"><button class="go" data-go="runner">Spring Matte Dash</button><button class="go alt" data-act="play">Spela Stjärnfångaren</button></div>`;
   }
   if (rewardReady()) {
-    return `<div class="keyrow"><span class="emo">🎉</span><div><b>Du har räknat i 30 minuter!</b><span>Nu får du spela i 20 minuter.</span></div></div>
+    return `<div class="keyrow"><span class="emo">🎉</span><div><b>Du har räknat i 30 minuter!</b><span>Nu får du spela Matte Dash och Stjärnfångaren i 20 minuter.</span></div></div>
       <button class="go" data-act="start">Starta spelet</button>`;
   }
   const min = Math.floor(S.timer.studyMs / 60_000), pct = Math.round((S.timer.studyMs / STUDY_MS) * 100);

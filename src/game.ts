@@ -1,4 +1,4 @@
-// Stjärnfångaren: the reward game (no maths). Move Robbi with a finger, catch treats, dodge meteors.
+// Stjärnfångaren: the reward game (no maths). Move the hero with a finger, catch treats, dodge meteors.
 // Only open while the 20-minute reward window is running.
 import { $, S, save, tone, robbiSVG, show } from './core';
 import { itemById } from './catalog';
@@ -123,7 +123,7 @@ function draw(rw: number, ry: number): void {
     ctx.font = 'bold 26px Fredoka, system-ui, sans-serif'; ctx.fillText(p.text, p.x, p.y - p.t * 70);
   }
   ctx.globalAlpha = 1;
-  if (state === 'intro') overlay('Stjärnfångaren', 'Flytta Robbi med fingret. Fånga godsakerna och akta dig för meteorerna!', 'Tryck för att börja');
+  if (state === 'intro') overlay('Stjärnfångaren', 'Flytta hjälten med fingret. Fånga godsakerna och akta dig för meteorerna!', 'Tryck för att börja');
   if (state === 'over') overlay(`${score} poäng!`, `Ditt rekord: ${S.hiscore}`, 'Tryck för att spela igen');
   if (state === 'timeup') overlay('Speltiden är slut!', 'Räkna 30 minuter till, så låser du upp spelet igen.', 'Tryck för att gå tillbaka');
 }

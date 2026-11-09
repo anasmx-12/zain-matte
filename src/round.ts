@@ -6,6 +6,7 @@ import { pickClock, buildClock, clockSVG, digital } from './clock';
 import { tableSpec, buildTab, renderTab, typeTab, type TabOpt } from './table';
 import { colSpec, buildCol, renderCol, typeCol, OPS, type Op, type ColQuestion } from './column';
 import { markActive, creditStudy, keyHTML } from './timer';
+import { openChat, plain } from './chat';
 import type { Mode, Question, Round, Spec, ChoiceOpt } from './types';
 
 export const G: { R: Round | null } = { R: null };
@@ -102,13 +103,18 @@ export function feedback(ok: boolean, explainHTML: string, extra = '', delay = 9
   const R = G.R!;
   const praise = pick(['Rätt!', 'Snyggt!', 'Jättebra!', 'Ja, precis!', 'Toppen!']);
   const f = document.createElement('div'); f.className = 'fb ' + (ok ? 'good' : 'bad');
-  f.innerHTML = ok ? `<div class="math">${praise}${extra}</div>` : `<div>Nästan! Så här blir det:</div>${explainHTML}<button class="go" id="goBtn">Okej, nästa</button>`;
+  f.innerHTML = ok ? `<div class="math">${praise}${extra}</div>` : `<div>Nästan! Så här blir det:</div>${explainHTML}<div class="row fbrow"><button class="ghost sky" id="askWhy">Jag förstår inte – fråga Sonic</button><button class="go" id="goBtn">Okej, nästa</button></div>`;
   $('#fbSlot').append(f); mood(ok ? 'happy' : 'oops');
   $('#why').textContent = ok ? (S.streak >= 5 ? `${S.streak} rätt i rad! Du är grym.` : praise) : whyWrong;
   speak(ok ? praise : 'Nästan!');
   R.i++;
   if (ok) setTimeout(() => { if (G.R === R) next(); }, delay);
-  else { $('#goBtn').focus(); $('#goBtn').onclick = next; }
+  else {
+    $('#goBtn').focus(); $('#goBtn').onclick = next;
+    const q = R.q!;
+    const clockTxt = q.kind === 'clock' && q.h != null ? ` Klockan i uppgiften visar ${digital(q.h, q.m!)}.` : '';
+    $('#askWhy').onclick = () => openChat({ question: q.say + clockTxt, correct: String(q.answer) }, plain(explainHTML));
+  }
 }
 
 /* ---------- end of round ---------- */

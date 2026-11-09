@@ -4,24 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#EAF2FB">
-<title>Räkna med Robbi</title>
+<meta name="theme-color" content="#1E5BFF">
+<title>Zain Matte</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
 </head>
 <body>
+<div class="speedbg" aria-hidden="true"></div>
 
 <div class="wrap">
   <header class="bar">
     <button class="logo" id="homeBtn" aria-label="Till startsidan">
       <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
-      <h1>Räkna med Robbi</h1>
+      <h1>Zain <span>Matte</span></h1>
     </button>
     <div class="chips">
       <button class="chip btn prof" id="profBtn" title="Byt årskurs och nivå">Välj årskurs</button>
-      <span class="chip" title="Stjärnor att handla för"><svg viewBox="0 0 24 24"><path class="starpath" d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"/></svg><span class="walletN">0</span></span>
+      <span class="chip" title="Matte-stjärnor att handla för"><svg viewBox="0 0 24 24"><path class="starpath" d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"/></svg><span class="walletN">0</span></span>
       <span class="chip" title="Rätt i rad">I rad: <span id="streak">0</span></span>
       <button class="chip btn" id="voiceBtn" aria-pressed="false">Läs upp</button>
+      <button class="chip btn ask" id="askBtn">💬 Fråga Sonic</button>
     </div>
   </header>
 
@@ -29,7 +31,7 @@
   <section id="profile" class="sec" hidden>
     <div class="say">
       <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
-      <div class="bubble"><small>Robbi frågar</small>Berätta vilken klass du går i, så gör jag uppgifter som passar dig.</div>
+      <div class="bubble"><small>Sonic frågar</small>Berätta vilken klass du går i, så gör jag uppgifter som passar dig.</div>
     </div>
     <div class="step"><h3>Vilken årskurs går du i?</h3><div class="opts" id="gradeOpts"></div></div>
     <div class="step"><h3>Vilken termin är det?</h3><div class="opts" id="termOpts"></div></div>
@@ -40,10 +42,14 @@
   <!-- HOME -->
   <section id="home" class="sec" hidden>
     <div class="say">
-      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
-      <div class="bubble"><small>Robbi säger</small><span id="homeSay"></span></div>
+      <svg class="robbi big" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Sonic säger</small><span id="homeSay"></span></div>
     </div>
     <div class="key" id="keyCard"></div>
+    <button class="banner exam" data-go="exampick">
+      <span class="emo">📝</span>
+      <span><b>Prov: testa dig själv!</b><span>Ett AI-gjort prov på varje kapitel. Inga ledtrådar – visa vad du kan och vinn en medalj.</span></span>
+    </button>
     <h2 class="hero">Vad vill du träna idag?</h2>
     <div class="modes">
       <button class="mode mul" data-mode="mul">
@@ -67,12 +73,21 @@
         <p>Välj en tabell från 1:an till 10:an och öva den i ordning eller blandat.</p>
       </button>
     </div>
+    <button class="banner chatb" data-go="chat">
+      <span class="emo">💬</span>
+      <span><b>Fråga Sonic</b><span>Förstår du inte en uppgift? Sonic-AI förklarar steg för steg och kan läsa upp svaret.</span></span>
+    </button>
     <h2 class="sub">Belöningar</h2>
     <div class="modes">
+      <button class="mode runc" data-go="garage">
+        <div class="art" id="homeRunArt"></div>
+        <h2>Matte Dash</h2>
+        <p>Spring med Sonic, Shadow, Amy och Knuckles! Köp hjältar, sköldar och spår i Garaget för dina matte-stjärnor.</p>
+      </button>
       <button class="mode shopc" data-go="shop">
         <div class="art"><span class="emo">🛍️</span></div>
         <h2>Butiken</h2>
-        <p>Köp möbler, djur och kläder till Robbi för dina stjärnor.</p>
+        <p>Köp möbler, djur och kläder till din hjälte för dina stjärnor.</p>
       </button>
       <button class="mode roomc" data-go="room">
         <div class="art" id="homeRoomArt"></div>
@@ -80,7 +95,7 @@
         <p>Dra in dina saker och möblera som du vill.</p>
       </button>
     </div>
-    <button class="grown" id="brainBtn">För vuxna: nivåer och så tänker Robbi</button>
+    <button class="grown" id="brainBtn">För vuxna: nivåer, prov och Sonic-AI</button>
   </section>
 
   <!-- PICK A TABLE -->
@@ -88,7 +103,7 @@
     <div class="top"><button class="back" data-go="home">Tillbaka</button></div>
     <div class="say">
       <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
-      <div class="bubble"><small>Robbi frågar</small>Vilken tabell vill du öva? Den gröna stapeln visar hur säker du är.</div>
+      <div class="bubble"><small>Sonic frågar</small>Vilken tabell vill du öva? Den gröna stapeln visar hur säker du är.</div>
     </div>
     <div class="tabgrid" id="tabGrid"></div>
     <div class="panel" id="tabView" hidden></div>
@@ -99,7 +114,7 @@
     <div class="top"><button class="back" data-go="home">Tillbaka</button></div>
     <div class="say">
       <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
-      <div class="bubble"><small>Robbi frågar</small>Vilket räknesätt vill du ställa upp? Jag gör tal som passar din nivå.</div>
+      <div class="bubble"><small>Sonic frågar</small>Vilket räknesätt vill du ställa upp? Jag gör tal som passar din nivå.</div>
     </div>
     <div class="ops" id="opGrid"></div>
   </section>
@@ -112,7 +127,7 @@
     </div>
     <div class="say">
       <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true" id="playRobbi"></svg>
-      <div class="bubble"><small>Robbi tänker</small><span id="why"></span></div>
+      <div class="bubble"><small>Sonic tänker</small><span id="why"></span></div>
     </div>
     <div class="card" id="card"></div>
   </section>
@@ -125,14 +140,49 @@
       <div class="starrow" id="doneStars"></div>
       <div class="say" style="text-align:left;width:100%">
         <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
-        <div class="bubble"><small>Robbi säger</small><span id="doneSay"></span></div>
+        <div class="bubble"><small>Sonic säger</small><span id="doneSay"></span></div>
       </div>
       <div class="key mini" id="doneKey"></div>
       <div class="row">
         <button class="go" id="againBtn">En omgång till</button>
         <button class="ghost sky" id="suggestBtn" hidden></button>
+        <button class="ghost" data-go="exampick">Gör ett prov</button>
         <button class="ghost" data-go="home">Startsidan</button>
       </div>
+    </div>
+  </section>
+
+  <!-- EXAM: PICK -->
+  <section id="exampick" class="sec" hidden>
+    <div class="top"><button class="back" data-go="home">Tillbaka</button></div>
+    <div class="say">
+      <svg class="robbi" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Provdags</small>Välj ett kapitel. Sonic-AI gör ett nytt prov på din nivå. Under provet får du ingen hjälp och ser inte om det är rätt – det får du veta när du lämnar in.</div>
+    </div>
+    <div class="exgrid" id="examGrid"></div>
+    <div class="step" id="examTables" hidden></div>
+    <button class="go big" id="examGo" style="align-self:flex-start">Starta provet</button>
+  </section>
+
+  <!-- EXAM: RUN -->
+  <section id="examrun" class="sec" hidden>
+    <div class="top">
+      <button class="back" id="examQuit">Avbryt provet</button>
+      <b class="extitle" id="examTitle"></b>
+    </div>
+    <div class="qnav" id="examNav" aria-label="Frågor i provet"></div>
+    <div class="card examcard" id="examCard"></div>
+  </section>
+
+  <!-- EXAM: RESULT -->
+  <section id="examdone" class="sec" hidden>
+    <div class="card done" id="examResult"></div>
+    <h2 class="sub">Så gick det</h2>
+    <div class="review" id="examReview"></div>
+    <div class="row">
+      <button class="go" id="examAgain">Gör ett nytt prov</button>
+      <button class="ghost sky" id="examTrain">Träna på kapitlet</button>
+      <button class="ghost" data-go="home">Startsidan</button>
     </div>
   </section>
 
@@ -141,6 +191,7 @@
     <div class="top">
       <button class="back" data-go="home">Tillbaka</button>
       <button class="back" data-go="room">Mitt rum</button>
+      <button class="back" data-go="garage">Garaget</button>
     </div>
     <div class="say">
       <svg class="robbi big" viewBox="0 0 64 64" aria-hidden="true"></svg>
@@ -169,6 +220,40 @@
     <div class="tray" id="tray"></div>
   </section>
 
+  <!-- GARAGE (shop for Matte Dash) -->
+  <section id="garage" class="sec" hidden>
+    <div class="top">
+      <button class="back" data-go="home">Tillbaka</button>
+      <button class="back" data-go="shop">Butiken</button>
+    </div>
+    <div class="say">
+      <svg class="robbi big" viewBox="0 0 64 64" aria-hidden="true"></svg>
+      <div class="bubble"><small>Garaget</small><span id="garageSay">Här köper du saker till Matte Dash. Allt kostar matte-stjärnor, så ju mer du räknar, desto mer kan du köpa!</span></div>
+    </div>
+    <div class="key" id="garagePlay"></div>
+    <h2 class="sub">Hjältar</h2>
+    <div class="items heroes" id="heroGrid"></div>
+    <h2 class="sub">Hjälp i loppet</h2>
+    <div class="items" id="boostGrid"></div>
+    <h2 class="sub">Spår</h2>
+    <div class="items" id="trailGrid"></div>
+  </section>
+
+  <!-- RUNNER GAME -->
+  <section id="runner" class="sec" hidden>
+    <div class="top">
+      <button class="back" data-go="garage">Sluta springa</button>
+      <span class="chip" id="runTime"></span>
+      <span class="chip" id="runScore"></span>
+    </div>
+    <div class="gamebox run"><canvas id="runCanvas" aria-label="Matte Dash, ett springspel"></canvas></div>
+    <div class="runpad">
+      <button class="pk" id="runLeft" aria-label="Vänster">◀</button>
+      <button class="pk" id="runJump" aria-label="Hoppa">Hoppa</button>
+      <button class="pk" id="runRight" aria-label="Höger">▶</button>
+    </div>
+  </section>
+
   <!-- REWARD GAME -->
   <section id="game" class="sec" hidden>
     <div class="top">
@@ -182,10 +267,27 @@
   <!-- BRAIN -->
   <section id="brain" class="sec" hidden>
     <div class="top"><button class="back" data-go="home">Tillbaka</button></div>
-    <h2 class="hero">Nivåer och Robbis hjärna</h2>
+    <h2 class="hero">För vuxna</h2>
+    <div class="panel">
+      <h2>Sonic-AI</h2>
+      <p>Appen har en egen AI, Sonic-AI (mappen <code>ai/</code>). Den gör proven och svarar i chatten "Fråga Sonic". Starta den på datorn med <code>./ai/start.sh</code>. Med en Claude-nyckel i <code>ai/.env</code> skriver den nya textuppgifter och svarar fritt i chatten; utan nyckel använder den en inbyggd förklarare.</p>
+      <p id="aiStatus"></p>
+      <div class="row" style="justify-content:flex-start">
+        <label for="aiUrl" style="font-weight:800">Adress till Sonic-AI</label>
+        <input id="aiUrl" class="txt" placeholder="http://localhost:8787">
+        <button class="back" id="aiSave">Spara och testa</button>
+      </div>
+      <p class="colnote" style="text-align:left">På en iPad: öppna appen via datorns adress, till exempel http://192.168.1.20:8787, så hittar den Sonic-AI automatiskt.</p>
+    </div>
+    <div class="panel">
+      <h2>Prov</h2>
+      <p>Proven görs utan stöd: inga ledtrådar, ingen rätt/fel-markering och ingen chatt förrän provet är inlämnat. Knappen "Lyssna på frågan" finns kvar så att barnet slipper läsa själv. Barnet får en stjärna per rätt svar och bonus vid 70 % och 90 %.</p>
+      <div class="scroll" id="examHist"></div>
+      <div id="examHistServer"></div>
+    </div>
     <div class="panel">
       <h2>Speltid som belöning</h2>
-      <p>Robbi räknar bara tid då barnet faktiskt svarar på uppgifter. Tiden mellan två svar räknas, men högst 90 sekunder, så en app som bara står öppen ger ingen speltid. Efter 30 minuter matte låses spelet Stjärnfångaren upp i 20 minuter. Speltiden räknas på klockan från att spelet startas, även om appen stängs.</p>
+      <p>Sonic räknar bara tid då barnet faktiskt svarar på uppgifter, även i prov. Tiden mellan två svar räknas, men högst 90 sekunder, så en app som bara står öppen ger ingen speltid. Efter 30 minuter matte låses spelen Matte Dash och Stjärnfångaren upp i 20 minuter. Allt i spelen köps med stjärnor från matten.</p>
       <div class="stat" id="timeStats"></div>
     </div>
     <div class="panel">
@@ -194,8 +296,8 @@
       <div class="scroll"><table class="plan" id="plan"></table></div>
     </div>
     <div class="panel">
-      <h2>Så tänker Robbi</h2>
-      <p>Robbi är en liten AI som körs direkt i webbläsaren. Efter varje svar uppdaterar den hur säkert barnet kan just den uppgiften. Snabba rätta svar höjer mer än långsamma. Inom den valda nivån väljer Robbi nästa uppgift så att barnet klarar ungefär tre av fyra. Fel svar kommer tillbaka några uppgifter senare, och klockan blandar in repetition från tidigare nivåer. När nivån sitter föreslår Robbi nästa nivå, och om det går tungt föreslår den en lättare.</p>
+      <h2>Så väljer Sonic uppgifter</h2>
+      <p>I övningarna körs en liten modell direkt i webbläsaren. Efter varje svar uppdaterar den hur säkert barnet kan just den uppgiften. Snabba rätta svar höjer mer än långsamma. Inom den valda nivån väljs nästa uppgift så att barnet klarar ungefär tre av fyra. Fel svar kommer tillbaka några uppgifter senare, och klockan blandar in repetition från tidigare nivåer. När nivån sitter föreslås nästa nivå, och om det går tungt föreslås en lättare.</p>
       <div class="stat" id="brainStats"></div>
     </div>
     <div class="panel">
@@ -214,10 +316,26 @@
     </div>
     <div class="panel">
       <h2>Börja om</h2>
-      <p>Allt sparas bara i den här webbläsaren. Här kan du nollställa vad Robbi vet om barnets kunskaper. Stjärnor, rum och köpta saker finns kvar.</p>
+      <p>Allt sparas i den här webbläsaren. Här kan du nollställa vad appen vet om barnets kunskaper. Stjärnor, rum, hjältar och köpta saker finns kvar.</p>
       <div class="row" style="justify-content:flex-start" id="resetRow"></div>
     </div>
   </section>
+</div>
+
+<!-- CHAT: Fråga Sonic -->
+<div id="chat" class="chatwrap" hidden role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+  <div class="chatbox">
+    <div class="chathead">
+      <h2 id="chatTitle">💬 Fråga Sonic</h2>
+      <button class="back" id="chatClose">Stäng</button>
+    </div>
+    <div class="chatlog" id="chatLog" aria-live="polite"></div>
+    <div class="quick" id="chatQuick"></div>
+    <form class="chatform" id="chatForm">
+      <input id="chatInput" class="txt" autocomplete="off" placeholder="Skriv din fråga, t.ex. 7 × 8" maxlength="400">
+      <button class="go" type="submit">Skicka</button>
+    </form>
+  </div>
 </div>
 
 <script type="module" src="/src/main.ts"></script>

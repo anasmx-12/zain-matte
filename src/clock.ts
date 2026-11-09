@@ -8,7 +8,7 @@ const NUM = ['tolv', 'ett', 'två', 'tre', 'fyra', 'fem', 'sex', 'sju', 'åtta',
 export const wrapH = (h: number): number => (((h - 1) % 12) + 12) % 12 + 1;
 const hw = (h: number): string => NUM[wrapH(h)];
 export const digital = (h: number, m: number): string => wrapH(h) + ':' + pad(m);
-function phrase(h: number, m: number): string {
+export function phrase(h: number, m: number): string {
   const c = hw(h), n = hw(h + 1);
   const p: Record<number, string> = {
     0: 'klockan är ' + c, 5: 'fem över ' + c, 10: 'tio över ' + c, 15: 'kvart över ' + c, 20: 'tio i halv ' + n, 25: 'fem i halv ' + n,

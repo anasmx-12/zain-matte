@@ -42,7 +42,7 @@ function drawRoom(): void {
   const g = $('#roomGrid');
   g.setAttribute('style', styleVars());
   g.innerHTML = roomInner() + '<div class="hl" hidden></div>';
-  const ids = Object.keys(S.owned).filter(id => !itemById(id)?.slot && available(id) > 0);
+  const ids = Object.keys(S.owned).filter(id => itemById(id) && !itemById(id)!.slot && available(id) > 0);
   $('#tray').innerHTML = ids.length
     ? ids.map(id => `<button class="trayitem" data-id="${id}" aria-label="${itemById(id)!.name}"><span>${itemById(id)!.emoji}</span>${available(id) > 1 ? `<small>×${available(id)}</small>` : ''}</button>`).join('')
     : '<p class="empty">Lådan är tom. Köp fler saker i butiken för dina stjärnor!</p>';

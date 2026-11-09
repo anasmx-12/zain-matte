@@ -1,4 +1,4 @@
-// The star shop: buy things for the room, clothes for Robbi, walls and floors.
+// The star shop: buy things for the room, clothes for the hero, walls and floors.
 import { $, $$, S, save, head, tone, speak, show, drawRobbi, STAR } from './core';
 import { ITEMS, SHOP_TABS, type Item, type ShopTab } from './catalog';
 
@@ -53,7 +53,7 @@ function buy(it: Item): void {
   S.owned[it.id] = owned(it.id) + 1;
   if (it.slot) setEquipped(it, true);
   save(); head(); tone('buy'); drawRobbi();
-  const say = it.slot === 'color' || it.slot === 'hat' || it.slot === 'glasses' ? `Snyggt! Robbi har nu ${it.name.toLowerCase()}.` :
+  const say = it.slot === 'color' || it.slot === 'hat' || it.slot === 'glasses' ? `Snyggt! Din hjälte har nu ${it.name.toLowerCase()}.` :
     it.slot ? `Klart! Ditt rum har nu ${it.name.toLowerCase()}.` : `Du köpte ${it.name.toLowerCase()}! Den ligger i lådan i ditt rum.`;
   $('#shopSay').textContent = say; speak(say);
   drawShop();
